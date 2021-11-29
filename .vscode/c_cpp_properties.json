@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/congtranv/ros/tu_graz_cdl/tug_ws/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/usr/include/**",
+                "/usr/local/include/**",
+                "/home/congtranv/ros/tu_graz_cdl/tug_ws/src/dla2_path_planner/include/**"
+            ],
+            "name": "ROS"
+        }
+    ],
+    "version": 4
+}

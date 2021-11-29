@@ -1,0 +1,39 @@
+<package>
+  <!-- Package Metadata -->
+  <name>dla2_path_planner</name>
+  <maintainer email="pestana@icg.tugraz.at">Jesus Pestana Puerta</maintainer>
+  <description>
+    Minimal ROS Node example implementing functionality from OMPL example demos/OptimalPlanning.cpp (checked on y2019m12d19).
+  </description>
+  <version>1.0.0</version>
+  <license>ICG_TUGraz</license>
+
+  <!-- Required by Catkin -->
+  <buildtool_depend>catkin</buildtool_depend>
+  <!-- Package Dependencies -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>mav_msgs</build_depend>
+  <build_depend>mav_planning_msgs</build_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>nodelet</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>mav_msgs</run_depend>
+  <run_depend>mav_planning_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+  <run_depend>tf2</run_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>nodelet</run_depend>
+
+  <!--
+  <export>
+    <nodelet plugin="${prefix}/dla2_path_planner_ros_nodelet.xml"/>
+  </export>
+  -->
+</package>
