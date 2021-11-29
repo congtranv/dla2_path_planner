@@ -8,6 +8,7 @@ TrajectoryVisualization::TrajectoryVisualization(ros::NodeHandle &n, ros::NodeHa
 
     // ROS publishers
     rviz_markers_white_publisher = pn.advertise<visualization_msgs::Marker>("trajectory_markers", 10, true);
+    rviz_marker_sphere_publisher = pn.advertise<visualization_msgs::Marker>("sphere_marker", 1, true);
 }
 
 void TrajectoryVisualization::trajectoryCallback(const mav_planning_msgs::PolynomialTrajectory4D::ConstPtr &p_msg) {
@@ -61,4 +62,22 @@ void TrajectoryVisualization::trajectoryCallback(const mav_planning_msgs::Polyno
     //case WHITE:
     rviz_markers_white_publisher.publish(p_traj_edges);
     rviz_markers_white_publisher.publish(p_traj_points);
+
+    // congtranv: add Sphere obstacle in RViz
+    visualization_msgs::Marker sphere;
+    sphere.header.frame_id = "world";
+    sphere.header.stamp = ros::Time::now();
+    sphere.ns = "basic_shape";
+    sphere.id = 2;
+    sphere.type = visualization_msgs::Marker::SPHERE;
+    sphere.action = visualization_msgs::Marker::ADD;
+    sphere.pose.position.x = sphere.pose.position.y = sphere.pose.position.z = 0.5;
+    sphere.pose.orientation.x = sphere.pose.orientation.y = sphere.pose.orientation.z = 0.0;
+    sphere.pose.orientation.w = 1.0;
+    sphere.scale.x = sphere.scale.y = sphere.scale.z = 0.5;
+    sphere.color.r = 0.0f;
+    sphere.color.g = 1.0f;
+    sphere.color.b = 0.0f;
+    sphere.color.a = 0.85;
+    rviz_marker_sphere_publisher.publish(sphere);
 }

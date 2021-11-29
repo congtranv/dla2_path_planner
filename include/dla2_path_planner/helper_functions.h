@@ -94,17 +94,24 @@ public:
         // const auto* state2D =
         //     state->as<ob::RealVectorStateSpace::StateType>();
 
-        // congtranv: add state3D
+        // congtranv: change to 3D state
         const auto* state3D =
             state->as<ob::RealVectorStateSpace::StateType>();
 
         // Extract the robot's (x,y) position from its state
+        // double x = state2D->values[0];
+        // double y = state2D->values[1];
+
+        // congtranv: change to 3D state
         double x = state3D->values[0];
         double y = state3D->values[1];
         double z = state3D->values[2];
 
         // Distance formula between two points, offset by the circle's
         // radius
+        // return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5)) - 0.25;
+
+        // congtranv: change to 3D state
         return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5) + (z-0.5)*(z-0.5)) - 0.25;
     }
 };

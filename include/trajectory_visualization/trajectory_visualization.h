@@ -38,6 +38,7 @@ private:
 
     // ROS publishers
     ros::Publisher rviz_markers_white_publisher;
+    ros::Publisher rviz_marker_sphere_publisher;
 };
 
 #endif // icg_trajectory_visualization_H

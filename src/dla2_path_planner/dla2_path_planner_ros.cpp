@@ -14,12 +14,21 @@ DLA2PathPlanner::DLA2PathPlanner(ros::NodeHandle &n, ros::NodeHandle &pn, int ar
     traj_planning_successful(false)
 {   
     // ROS topics
-    current_position_sub = pnode_.subscribe("current_position", 10, &DLA2PathPlanner::currentPositionCallback, this);
-    goal_position_sub = pnode_.subscribe("goal_position", 10, &DLA2PathPlanner::goalPositionCallback, this);
+    // current_position_sub = pnode_.subscribe("current_position", 10, &DLA2PathPlanner::currentPositionCallback, this);
+    // goal_position_sub = pnode_.subscribe("goal_position", 10, &DLA2PathPlanner::goalPositionCallback, this);
+
+    // congtranv
+    current_3d_position_sub = pnode_.subscribe("current_3d_position", 10, &DLA2PathPlanner::current3DPositionCallback, this);
+    goal_3d_position_sub = pnode_.subscribe("goal_3d_position", 10, &DLA2PathPlanner::goal3DPositionCallback, this);
+
     trajectory_pub = pnode_.advertise<mav_planning_msgs::PolynomialTrajectory4D>("planned_trajectory", 1);
 
-    current_position.x = 0.; current_position.y = 0.;
-    goal_position.x = 1.; goal_position.y = 1.;
+    // current_position.x = 0.; current_position.y = 0.;
+    // goal_position.x = 1.; goal_position.y = 1.;
+
+    // congtranv
+    current_3d_position.x = 0.0; current_3d_position.y = 0.0; current_3d_position.z = 0.0;
+    goal_3d_position.x = 1.0; goal_3d_position.y = 1.0; goal_3d_position.z = 1.0;
 
     // Parse the arguments, returns true if successful, false otherwise
     if (argParse(argc, argv, &runTime, &plannerType, &objectiveType, &outputFile))
@@ -36,14 +45,34 @@ DLA2PathPlanner::~DLA2PathPlanner() {
 
 }
 
-void DLA2PathPlanner::currentPositionCallback(const mav_planning_msgs::Point2D::ConstPtr& p_msg) {
-    current_position = *p_msg;
-    ROS_INFO_STREAM("New current position, x: " << current_position.x << "; y: " << current_position.y);
-}
+// void DLA2PathPlanner::currentPositionCallback(const mav_planning_msgs::Point2D::ConstPtr& p_msg) {
+//     current_position = *p_msg;
+//     ROS_INFO_STREAM("New current position, x: " << current_position.x << "; y: " << current_position.y);
+// }
 
-void DLA2PathPlanner::goalPositionCallback(const mav_planning_msgs::Point2D::ConstPtr& p_msg) {
-    goal_position = *p_msg;
-    ROS_INFO_STREAM("New goal position, x: " << goal_position.x << "; y: " << goal_position.y);
+// void DLA2PathPlanner::goalPositionCallback(const mav_planning_msgs::Point2D::ConstPtr& p_msg) {
+//     goal_position = *p_msg;
+//     ROS_INFO_STREAM("New goal position, x: " << goal_position.x << "; y: " << goal_position.y);
+
+//     plan();
+
+//     if (traj_planning_successful) {
+//         convertOMPLPathToMsg();
+//         mav_planning_msgs::PolynomialTrajectory4D::Ptr p_traj_msg = 
+//             mav_planning_msgs::PolynomialTrajectory4D::Ptr( new mav_planning_msgs::PolynomialTrajectory4D( last_traj_msg ) );
+//         trajectory_pub.publish(last_traj_msg);
+//     }
+// }
+
+// congtranv
+void DLA2PathPlanner::current3DPositionCallback(const geometry_msgs::Point::ConstPtr& msg) {
+    current_3d_position = *msg;
+    ROS_INFO_STREAM("New current position, x: " << current_3d_position.x << "; y: " << current_3d_position.y << "; z: " << current_3d_position.z);
+}
+// congtranv
+void DLA2PathPlanner::goal3DPositionCallback(const geometry_msgs::Point::ConstPtr& msg) {
+    goal_3d_position = *msg;
+    ROS_INFO_STREAM("New goal position, x: " << goal_3d_position.x << "; y: " << goal_3d_position.y << "; z: " << goal_3d_position.z);
 
     plan();
 
@@ -68,9 +97,16 @@ void DLA2PathPlanner::convertOMPLPathToMsg() {
         ompl::base::State *p_s = states[i];
         const double &x_s = p_s->as<ob::RealVectorStateSpace::StateType>()->values[0];
         const double &y_s = p_s->as<ob::RealVectorStateSpace::StateType>()->values[1];
-        double z_s = 0.;
+        // double z_s = 0.;
+
+        //congtranv
+        const double &z_s = p_s->as<ob::RealVectorStateSpace::StateType>()->values[2];
+
         double yaw_s = 0.;
-        ROS_INFO_STREAM("states["<< i <<"], x_s: " << x_s << "; y_s: " << y_s);
+        // ROS_INFO_STREAM("states["<< i <<"], x_s: " << x_s << "; y_s: " << y_s);
+
+        // congtranv
+        ROS_INFO_STREAM("states["<< i <<"], x_s: " << x_s << "; y_s: " << y_s << "; z_s: " << z_s);
 
         mav_planning_msgs::PolynomialSegment4D segment;
         segment.header = msg.header;
@@ -94,6 +130,9 @@ void DLA2PathPlanner::plan()
     // Set the bounds of space to be in [0,1].
     space->setBounds(0.0, 1.0);
 
+    // congtranv
+    space->addDimension(0.0, 1.0); 
+
     // Construct a space information instance for this state space
     auto si(std::make_shared<ob::SpaceInformation>(space));
 
@@ -105,14 +144,24 @@ void DLA2PathPlanner::plan()
     // Set our robot's starting state to be the bottom-left corner of
     // the environment, or (0,0).
     ob::ScopedState<> start(space);
-    start->as<ob::RealVectorStateSpace::StateType>()->values[0] = current_position.x;
-    start->as<ob::RealVectorStateSpace::StateType>()->values[1] = current_position.y;
+    // start->as<ob::RealVectorStateSpace::StateType>()->values[0] = current_position.x;
+    // start->as<ob::RealVectorStateSpace::StateType>()->values[1] = current_position.y;
+
+    // congtranv
+    start->as<ob::RealVectorStateSpace::StateType>()->values[0] = current_3d_position.x;
+    start->as<ob::RealVectorStateSpace::StateType>()->values[1] = current_3d_position.y;
+    start->as<ob::RealVectorStateSpace::StateType>()->values[2] = current_3d_position.z; 
 
     // Set our robot's goal state to be the top-right corner of the
     // environment, or (1,1).
     ob::ScopedState<> goal(space);
-    goal->as<ob::RealVectorStateSpace::StateType>()->values[0] = goal_position.x;
-    goal->as<ob::RealVectorStateSpace::StateType>()->values[1] = goal_position.y;
+    // goal->as<ob::RealVectorStateSpace::StateType>()->values[0] = goal_position.x;
+    // goal->as<ob::RealVectorStateSpace::StateType>()->values[1] = goal_position.y;
+
+    // congtranv
+    goal->as<ob::RealVectorStateSpace::StateType>()->values[0] = goal_3d_position.x;
+    goal->as<ob::RealVectorStateSpace::StateType>()->values[1] = goal_3d_position.y;
+    goal->as<ob::RealVectorStateSpace::StateType>()->values[2] = goal_3d_position.z;
 
     // Create a problem instance
     auto pdef(std::make_shared<ob::ProblemDefinition>(si));
