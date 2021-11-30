@@ -163,6 +163,9 @@ void DLA2PathPlanner::plan()
     goal->as<ob::RealVectorStateSpace::StateType>()->values[1] = goal_3d_position.y;
     goal->as<ob::RealVectorStateSpace::StateType>()->values[2] = goal_3d_position.z;
 
+    // congtranv
+    start_time = ros::Time::now();
+
     // Create a problem instance
     auto pdef(std::make_shared<ob::ProblemDefinition>(si));
 
@@ -183,16 +186,22 @@ void DLA2PathPlanner::plan()
 
     // attempt to solve the planning problem in the given runtime
     ob::PlannerStatus solved = optimizingPlanner->solve(runTime);
+    calculation_time = ros::Time::now().toSec() - start_time.toSec();
 
     if (solved)
     {
+        // congtranv
+        // calculation_time = ros::Time::now().toSec() - start_time.toSec();
+        std::printf("[ ] Point reached: %s \n", solved ? "true":"false");
+        std::printf("[ ] Calculation time: %f \n", calculation_time);
+
         // Output the length of the path found
         std::cout
             << optimizingPlanner->getName()
             << " found a solution of length "
             << pdef->getSolutionPath()->length()
             << " with an optimization objective value of "
-            << pdef->getSolutionPath()->cost(pdef->getOptimizationObjective()) << std::endl;
+            << pdef->getSolutionPath()->cost(pdef->getOptimizationObjective()) << std::endl;        
 
         // If a filename was specified, output the path as a matrix to
         // that file for visualization

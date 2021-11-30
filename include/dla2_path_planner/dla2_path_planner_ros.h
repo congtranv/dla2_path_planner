@@ -87,6 +87,9 @@ private:
 
     // congtranv
     geometry_msgs::Point current_3d_position, goal_3d_position;
+    bool point_reached;
+    ros::Time start_time;
+    double calculation_time;
 
     bool traj_planning_successful;
     std::shared_ptr<ompl::geometric::PathGeometric> p_last_traj_ompl;
