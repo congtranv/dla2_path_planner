@@ -64,6 +64,24 @@ set(EXTRA_LIBS
   ${OMPL_LIBRARIES}
 )
 
+# octomap ## congtranv
+find_package(octomap REQUIRED)
+include_directories( ${OCTOMAP_INCLUDE_DIRS} )
+link_directories( ${OCTOMAP_LIBRARY_DIR} )
+set(EXTRA_LIBS
+  ${EXTRA_LIBS}
+  ${OCTOMAP_LIBRARIES}
+)
+
+# dynamicEDT3D ## congtranv
+find_package(dynamicEDT3D)
+include_directories( ${DYNAMICEDT3D_INCLUDE_DIRS} )
+link_directories( ${DYNAMICEDT3D_LIBRARY_DIR} )
+set(EXTRA_LIBS
+  ${EXTRA_LIBS}
+  ${DYNAMICEDT3D_LIBRARIES}
+)
+
 # some_non_ros_library
 #SET(EXTRA_LIBS
 #  ${EXTRA_LIBS}
