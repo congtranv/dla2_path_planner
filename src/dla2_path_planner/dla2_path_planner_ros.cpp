@@ -8,6 +8,11 @@
 
 #include <dla2_path_planner/dla2_path_planner_ros.h>
 
+// congtranv
+// #include<dynamicEDT3D/dynamicEDTOctomap.h>
+// #include<dynamicEDT3D/dynamicEDT3D.h>
+// #include<iostream>
+
 DLA2PathPlanner::DLA2PathPlanner(ros::NodeHandle &n, ros::NodeHandle &pn, int argc, char** argv) :
     pnode_(pn),
     node_(n),
@@ -123,15 +128,42 @@ void DLA2PathPlanner::convertOMPLPathToMsg() {
 
 void DLA2PathPlanner::plan()
 {
+    // congtranv
+    //---------------------------------------------//
+    // octomap::OcTree *tree = NULL;
+    // tree = new octomap::OcTree(0.05);
+    // // tree->readBinary("/home/congtranv/ros/tu_graz_cdl/tug_ws/src/dla2_path_planner/maps/power_plant.bt");
+    // tree->readBinary("/home/congtranv/ros/tu_graz_cdl/tug_ws/src/dla2_path_planner/maps/fr_078_tidyup.bt");
+    // std::cout<<"[ ] read in tree, "<<tree->getNumLeafNodes()<<" leaves "<<std::endl;
+
+    // double x,y,z;
+    // tree->getMetricMin(x,y,z);
+    // octomap::point3d min(x,y,z);
+    // std::cout<<"[ ] Metric min: "<<x<<","<<y<<","<<z<<std::endl;
+    // tree->getMetricMax(x,y,z);
+    // octomap::point3d max(x,y,z);
+    // std::cout<<"[ ] Metric max: "<<x<<","<<y<<","<<z<<std::endl;
+    
+    
+    // -------------------------------------------//
+
     // Construct the robot state space in which we're planning. We're
     // planning in [0,1]x[0,1], a subset of R^2.
     auto space(std::make_shared<ob::RealVectorStateSpace>(2));
-
+    
     // Set the bounds of space to be in [0,1].
     space->setBounds(0.0, 1.0);
+    
+    // congtranv
+    space->addDimension(0.0, 1.0);
 
     // congtranv
-    space->addDimension(0.0, 1.0); 
+    // auto space(std::make_shared<ob::RealVectorStateSpace>());
+    // space->addDimension(min.x(), max.x()); 
+    // space->addDimension(min.y(), max.y());
+    // space->addDimension(min.z(), max.z());
+
+    std::cout << "[ ] space dimension: " << space->getDimension() << "\n";
 
     // Construct a space information instance for this state space
     auto si(std::make_shared<ob::SpaceInformation>(space));

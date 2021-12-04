@@ -40,6 +40,9 @@
 
 #include <fstream>
 
+// congtranv
+#include<dynamicEDT3D/dynamicEDTOctomap.h>
+
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
@@ -111,7 +114,9 @@ public:
         // radius
         // return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5)) - 0.25;
 
-        // congtranv: change to 3D state
+        // congtranv: calculate clearance
+        double clearance;
+        
         return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5) + (z-0.5)*(z-0.5)) - 0.25;
     }
 };
@@ -131,7 +136,15 @@ public:
     }
 
     ompl::base::Cost motionCost(const ompl::base::State *s1, const ompl::base::State *s2) const override {
-	return ompl::base::Cost(si_->distance(s1, s2));
+	// return ompl::base::Cost(si_->distance(s1, s2)); 
+
+    // congtranv: change cost function 
+    const auto* state1 = s1->as<ob::RealVectorStateSpace::StateType>(); 
+    const auto* state2 = s2->as<ob::RealVectorStateSpace::StateType>(); 
+    double x1 = state1->values[0];double y1 = state1->values[1];double z1 = state1->values[2]; 
+    double x2 = state2->values[0];double y2 = state2->values[1];double z2 = state2->values[2]; 
+    double v = sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + 80*(z1-z2)*(z1-z2)); 
+    return ompl::base::Cost(v); 
     }
 
     ompl::base::Cost motionCostHeuristic(const ompl::base::State *s1, const ompl::base::State *s2) const override  {

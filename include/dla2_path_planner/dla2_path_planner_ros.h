@@ -87,7 +87,6 @@ private:
 
     // congtranv
     geometry_msgs::Point current_3d_position, goal_3d_position;
-    bool point_reached;
     ros::Time start_time;
     double calculation_time;
 
