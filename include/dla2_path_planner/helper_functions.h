@@ -46,6 +46,8 @@
 namespace ob = ompl::base;
 namespace og = ompl::geometric;
 
+DynamicEDTOctomap *distmap;
+
 // An enum of supported optimal planners, alphabetical order
 enum optimalPlanner
 {
@@ -113,11 +115,18 @@ public:
         // Distance formula between two points, offset by the circle's
         // radius
         // return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5)) - 0.25;
-
-        // congtranv: calculate clearance
-        double clearance;
         
-        return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5) + (z-0.5)*(z-0.5)) - 0.25;
+        // return sqrt((x-0.5)*(x-0.5) + (y-0.5)*(y-0.5) + (z-0.5)*(z-0.5)) - 0.25;
+        
+        // congtranv
+        //---------------------------------------//
+        octomap::point3d point(x, y, z);
+        octomap::point3d closestObst;
+        float distance;
+        distmap->getDistanceAndClosestObstacle(point, distance, closestObst);
+        // std::cout << closestObst.x() << closestObst.y() << closestObst.z() << "\n";
+        return (double) distance;
+        //---------------------------------------//
     }
 };
 
